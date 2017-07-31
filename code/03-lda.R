@@ -10,6 +10,9 @@ require(mallet)
 # require(tidyquant)
 require(dplyr)
 
+# Just in case:
+options(java.parameters = "-Xmx8000m")
+
 #------------------
 
 runLDA <- function(data, n.of.topics, stoplist.file, report.file.name) {
