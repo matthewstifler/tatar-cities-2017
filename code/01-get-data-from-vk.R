@@ -34,7 +34,7 @@ for (i in 1:length(ids)) {
                               "&count=", "1")), as = "parsed")$response[[1]]
   
   pb <- progress_bar$new(
-    format = "Getting data [:bar] :percent ETA: :eta",
+    format = ":spin Getting data [:bar] :percent Elapsed time: :elapsedfull ETA: :eta",
     total = (count %/% 100) + 1)
   
   pb$tick(0)
@@ -51,7 +51,7 @@ for (i in 1:length(ids)) {
                                        "&count=", "100")), as = "parsed")$response[-1]
     
     data.dates <- sapply(current.data, function(x) x$date)
-    current.data <- lapply(current.data, function(x) return(list(id = x$id, text = x$text)))
+    current.data <- lapply(current.data, function(x) return(list(id = x$id, text = x$text, date = x$date, author.id = x$from_id)))
     
     comments <- list()
     comments <- lapply(current.data, function(x) {
@@ -86,14 +86,16 @@ for (i in 1:length(ids)) {
   message(paste0("Overall, ", sum(sapply(group.data, function(x) sapply(x, length))), " items were downloaded\n"))
 }
 
-posts.with.comments <- lapply(group.data, function(x) {
-  output <- c()
+lapply(group.data, function(x) {
+  text <- c()
   for (i in 1:length(x$wall.posts)) {
-    output[i] <- paste(x$wall.posts[[i]]$text, paste(x$comments[[i]], collapse = " "))
+    text[i] <- paste(x$wall.posts[[i]]$text, paste(x$comments[[i]], collapse = " "))
   }
-  return(output)
-}) %>% unlist
+  return(data.frame(author.id = sapply(x$wall.posts, function(y) y$from_id),
+                    post.id = sapply(x$wall.posts, function(y) y$id),
+                    date = sapply(x$wall.posts, function(y) y$date),
+                    text = text))
+}) %>% {do.call(rbind, .)} %>% 
+  write.csv(file = output.file.name,
+            row.names = FALSE)
 
-write.csv(data.frame(text = posts.with.comments),
-          file = output.file.name,
-          row.names = FALSE)
