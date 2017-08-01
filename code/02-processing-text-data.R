@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Usage: Rscript --vanilla 02-processing-text-data.R %input file% %output file% %optional stoplist file%
+# Usage: Rscript --vanilla 02-processing-text-data.R %input file% %output file% %stoplist file path%
 # e.g.: Rscript --vanilla 02-processing-text-data.R data/data-elabuga.csv data/data-elabuga-processed.csv data/stoplist
 
 #-------------------
@@ -45,11 +45,18 @@ data$text <- gsub("(https://)(\\S*)", " ", data$text) %>%
     trimws %>% 
     gsub("\\s{2,}", " ", .)
 
+message("Text cleaned")
+message(Sys.time())
+
 data$text <- lemmatize(data$text)
 
-if (exists(stoplist.file.name)) {
-  stopwords <- readLines(stoplist.file.name)
-  data$text <- tm::removeWords(data$text, stopwords)
-}
+message("All words are in their dictionary form")
+message(Sys.time())
+
+stopwords <- readLines(stoplist.file.name)
+data$text <- tm::removeWords(data$text, stopwords) %>% gsub("\\s{2,}", " ", .)
+message("Stopwords removed!") 
+message(Sys.time())
 
 write.csv(data, output.file.name, row.names = FALSE)
+message("Output file is written, the script is finished")
