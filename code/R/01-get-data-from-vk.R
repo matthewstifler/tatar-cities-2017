@@ -9,13 +9,34 @@
 require(httr)
 require(dplyr)
 require(progress)
+#--------------------------
 
+writePostsToCsv <- function(data, output.file.name) {
+  text <- c()
+  for (i in 1:length(data$wall.posts)) {
+    text[i] <- paste(data$wall.posts[[i]]$text, paste(data$comments[[i]], collapse = " "))
+  }
+  
+  data.frame(author.id = sapply(data$wall.posts, function(y) y$author.id),
+             post.id = sapply(data$wall.posts, function(y) y$id),
+             date = sapply(data$wall.posts, function(y) y$date),
+             text = text) %>%
+    write.table(file = output.file.name, append = TRUE, row.names = FALSE, col.names = FALSE, sep = ",")
+}
+
+#--------------------------
 #Depth setting:
 date <- 1262293200
 args <- commandArgs(trailingOnly=TRUE)
 ids <- args[2:length(args)]
 output.file.name <- args[1]
 
+#Setup empty table with headers for the output file
+write.table(data.frame(author.id = "author.id", post.id = "post.id", date = "date", text = "text"),
+            output.file.name,
+            row.names = FALSE,
+            col.names = TRUE,
+            sep = ",")
 group.data <- list()
 
 # Download data
@@ -79,6 +100,7 @@ for (i in 1:length(ids)) {
       group.data[[i]]$comments[((j - 1)*100 + 1):((j - 1)*100 + length(current.data))] <- comments
     }
     
+    writePostsToCsv(list(wall.posts = group.data[[i]]$wall.posts[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)], comments = group.data[[i]]$comments[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)]), output.file.name)
     pb$tick()
   }
   
@@ -86,16 +108,16 @@ for (i in 1:length(ids)) {
   message(paste0("Overall, ", sum(sapply(group.data, function(x) sapply(x, length))), " items were downloaded\n"))
 }
 
-lapply(group.data, function(x) {
-  text <- c()
-  for (i in 1:length(x$wall.posts)) {
-    text[i] <- paste(x$wall.posts[[i]]$text, paste(x$comments[[i]], collapse = " "))
-  }
-  return(data.frame(author.id = sapply(x$wall.posts, function(y) y$from_id),
-                    post.id = sapply(x$wall.posts, function(y) y$id),
-                    date = sapply(x$wall.posts, function(y) y$date),
-                    text = text))
-}) %>% {do.call(rbind, .)} %>% 
-  write.csv(file = output.file.name,
-            row.names = FALSE)
-
+# lapply(group.data, function(x) {
+#   text <- c()
+#   for (i in 1:length(x$wall.posts)) {
+#     text[i] <- paste(x$wall.posts[[i]]$text, paste(x$comments[[i]], collapse = " "))
+#   }
+#   return(data.frame(author.id = sapply(x$wall.posts, function(y) y$from_id),
+#                     post.id = sapply(x$wall.posts, function(y) y$id),
+#                     date = sapply(x$wall.posts, function(y) y$date),
+#                     text = text))
+# }) %>% {do.call(rbind, .)} %>% 
+#   write.csv(file = output.file.name,
+#             row.names = FALSE)
+# 
