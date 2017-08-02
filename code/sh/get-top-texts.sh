@@ -3,6 +3,10 @@
 # Usage: bash 100 50 lda-reports/elabuga-lda-100/elabuga-lda-100-doc-topic.csv data/data-elabuga-processed.csv
 # Run from project root
 
+# TODO: Automatically identify number of topics (N of columns in doc-topic matrix, i.e. number of commas + 1)
+#       Automatically name folder (i.e. name of the doc-topic matrix), so that there aren't same folders (perhaps, add numbers to the name: folder-1, folder-2)
+#       Replace R script with python or bash, to speed things up
+
 nOfTopics=$1
 nOfPosts=$2
 docTopic=$3
