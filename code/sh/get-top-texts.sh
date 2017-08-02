@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: bash 100 50 lda-reports/elabuga-lda-100/elabuga-lda-100-doc-topic.csv data/data-elabuga-processed.csv
+# Usage: bash 100 50 lda-reports/elabuga-lda-100/elabuga-lda-100-doc-topic.csv data/data-elabuga-processed.csv elabuga-100
 # Run from project root
 
 # TODO: Automatically identify number of topics (N of columns in doc-topic matrix, i.e. number of commas + 1)
@@ -11,8 +11,9 @@ nOfTopics=$1
 nOfPosts=$2
 docTopic=$3
 textSource=$4
+dirName=$5
 
-mkdir top-texts-lda && cd $_
+mkdir dirName && cd $_
 
 for ((i=1; i<=$nOfTopics; i++))
   do
