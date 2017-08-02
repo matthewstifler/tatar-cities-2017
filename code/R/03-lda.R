@@ -11,7 +11,8 @@ require(mallet)
 require(dplyr)
 
 # Just in case:
-options(java.parameters = "-Xmx8000m")
+options(java.parameters = "-Xmx20g")
+options(mc.cores = 6)
 
 #------------------
 
