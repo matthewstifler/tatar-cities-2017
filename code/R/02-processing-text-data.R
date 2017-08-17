@@ -50,11 +50,13 @@ message(Sys.time())
 
 data$text <- lemmatize(data$text)
 
-message("All words are in their dictionary form")
+message("All words are in their initial form")
 message(Sys.time())
 
 stopwords <- readLines(stoplist.file.name)
-data$text <- tm::removeWords(data$text, stopwords) %>% gsub("\\s{2,}", " ", .)
+stopwords_regex <- paste(stopwords, collapse = '\\b|\\b')
+stopwords_regex <- paste0('\\b', stopwords_regex, '\\b')
+data$text <- stringr::str_replace_all(data$text, stopwords_regex, " ") %>% gsub("\\s{2,}", " ", .)
 message("Stopwords removed!") 
 message(Sys.time())
 
