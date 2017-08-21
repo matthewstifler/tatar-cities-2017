@@ -14,7 +14,7 @@ require(dplyr)
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.csv(args[1], stringsAsFactors = FALSE)
+data <- read.delim(args[1], stringsAsFactors = FALSE)
 
 report.prefix <- args[2]
 
