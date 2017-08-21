@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
-# Usage: Rscript --vanilla 01-get-data-from-vk.R %name of output file% %list of group IDs%
-# e.g.: Rscript --vanilla 01-get-data-from-vk.R group.data.muslumovo -61751570 -72422310
+# Usage: Rscript --vanilla 01-get-data-from-vk.R [Path to text file with VK token] [Path of the output file] [List of group IDs]
+# e.g.: Rscript --vanilla 01-get-data-from-vk.R config/vk-token group.data.muslumovo -61751570 -72422310
 
 # NOTE: better run it in tmux, because it can take significant time to run
 
@@ -28,8 +28,11 @@ writePostsToCsv <- function(data, output.file.name) {
 #Depth setting:
 date <- 1262293200
 args <- commandArgs(trailingOnly=TRUE)
-ids <- args[2:length(args)]
-output.file.name <- args[1]
+token <- readLines(args[1])[1]
+ids <- args[3:length(args)]
+output.file.name <- args[2]
+
+#-------------Data fetching-------------
 
 #Setup empty table with headers for the output file
 write.table(data.frame(author.id = "author.id", post.id = "post.id", date = "date", text = "text"),
@@ -49,7 +52,7 @@ for (i in 1:length(ids)) {
   group.data[[i]] <- list(wall.posts = list(), comments = list())
   
   count <- content(GET(paste0("https://api.vk.com/method/", "wall.get", 
-                              "?access_token=", "24f3f52000d221fb9d47c9039134fb3623108c4cf67d24dae0b772702d1b9ab6750c220e3ff7989cd3a17", 
+                              "?access_token=", as.character(token), 
                               "&owner_id=", as.character(ids[i]),
                               "&filter=", "owner",
                               "&count=", "1")), as = "parsed")$response[[1]]
@@ -65,7 +68,7 @@ for (i in 1:length(ids)) {
     
     current.data <- list()
     current.data <- content(GET(paste0("https://api.vk.com/method/", "wall.get", #get a batch and store it in according slots
-                                       "?access_token=", "24f3f52000d221fb9d47c9039134fb3623108c4cf67d24dae0b772702d1b9ab6750c220e3ff7989cd3a17", 
+                                       "?access_token=", as.character(token), 
                                        "&owner_id=", as.character(ids[i]),
                                        "&filter=", "owner",
                                        "&offset=", ((j - 1) * 100),
@@ -78,7 +81,7 @@ for (i in 1:length(ids)) {
     comments <- lapply(current.data, function(x) {
       Sys.sleep(0.3)
       content(GET(paste0("https://api.vk.com/method/", "wall.getComments", #get a batch and store it in according slots
-                         "?access_token=", "24f3f52000d221fb9d47c9039134fb3623108c4cf67d24dae0b772702d1b9ab6750c220e3ff7989cd3a17", 
+                         "?access_token=", as.character(token), 
                          "&owner_id=", as.character(ids[i]),
                          "&post_id=", as.character(x$id),
                          "&need_likes=", "0",
