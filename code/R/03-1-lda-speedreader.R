@@ -25,8 +25,17 @@ n.of.topics <- as.numeric(args[4:length(args)])
 #------------------
 
 dir.create(file.path("lda-reports"), showWarnings = FALSE)
+dir.create(file.path(report.prefix), showWarnings = FALSE)
 
 for (i in n.of.topics) {
+  
+  #---------Create folder structure---------
+  
+  current.path <- file.path("lda-reports", report.prefix, paste0(i, "-topics"))
+  dir.create(current.path, showWarnings = FALSE)
+  
+  #---------Run actual LDA---------
+  
   lda.result <- mallet_lda(documents = as.character(data$text),
                                         topics = i,
                                         iterations = 1500,
@@ -37,21 +46,19 @@ for (i in n.of.topics) {
                                         delete_intermediate_files = TRUE)
   
   #----------Writing results----------
-  dir.create(file.path("lda-reports", paste0(report.prefix, "-", i)), showWarnings = FALSE)
-  
   write.csv(lda.result$document_topic_proportions,
-            paste0("lda-reports/", report.prefix, "-", i, "/", report.prefix, "-", i, "-doc-topics.csv"),
+            file.path(current.path, paste0(report.prefix, "-", i, "-doc-topics.csv")),
             row.names = FALSE)
   
   data.frame(topic = 1:i,
              size = lda.result$topic_metadata$total_tokens,
              label = apply(lda.result$topic_top_words, 1, function(x) paste(x, collapse = ", "))) %>% 
-    write.csv2(paste0("lda-reports/", report.prefix, "-", i, "/", report.prefix, "-", i, "-topic-labels.csv"),
+    write.csv2(file.path(current.path, paste0(report.prefix, "-", i, "-topic-labels.csv")),
                row.names = FALSE)
   
   data.frame(topic = 1:i,
              size = lda.result$topic_metadata$total_tokens,
              label = apply(lda.result$topic_top_phrases, 1, function(x) paste(x, collapse = ", "))) %>% 
-    write.csv2(paste0("lda-reports/", report.prefix, "-", i, "/", report.prefix, "-", i, "-topic-phrases.csv"),
+    write.csv2(file.path(current.path, paste0(report.prefix, "-", i, "-topic-phrases.csv")),
                row.names = FALSE)
 }
