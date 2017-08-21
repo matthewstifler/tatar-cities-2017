@@ -21,6 +21,6 @@ for ((i=1; i<=$nOfTopics; i++))
  done
  
 cd ..
-tar -zcvf "$dirName.tar.gz" ./$dirName
+zip -r9 "$dirName.tar.gz" ./$dirName
 rm -r $dirName
  
