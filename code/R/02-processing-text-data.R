@@ -24,7 +24,7 @@ lemmatize <- function(text.data) {
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.csv(file = args[1], stringsAsFactors = FALSE)
+data <- read.delim(file = args[1], stringsAsFactors = FALSE)
 
 output.file.name <- args[2]
 
@@ -57,8 +57,9 @@ stopwords <- readLines(stoplist.file.name)
 stopwords_regex <- paste(stopwords, collapse = '\\b|\\b')
 stopwords_regex <- paste0('\\b', stopwords_regex, '\\b')
 data$text <- stringr::str_replace_all(data$text, stopwords_regex, " ") %>% gsub("\\s{2,}", " ", .)
-message("Stopwords removed!") 
+
+message("Stopwords removed") 
 message(Sys.time())
 
-write.csv(data, output.file.name, row.names = FALSE)
+write.table(data, output.file.name, row.names = FALSE, sep = "\t")
 message("Output file is written, the script is finished")

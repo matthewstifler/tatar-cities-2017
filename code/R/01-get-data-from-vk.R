@@ -11,7 +11,7 @@ require(dplyr)
 require(progress)
 #--------------------------
 
-writePostsToCsv <- function(data, output.file.name) {
+writePostsToTsv <- function(data, output.file.name) {
   text <- c()
   for (i in 1:length(data$wall.posts)) {
     text[i] <- paste(data$wall.posts[[i]]$text, paste(data$comments[[i]], collapse = " "))
@@ -27,6 +27,8 @@ writePostsToCsv <- function(data, output.file.name) {
 #--------------------------
 #Depth setting:
 date <- 1262293200
+
+#-------------Arguments processing-------------
 args <- commandArgs(trailingOnly=TRUE)
 token <- readLines(args[1])[1]
 ids <- args[3:length(args)]
@@ -38,8 +40,8 @@ output.file.name <- args[2]
 write.table(data.frame(author.id = "author.id", post.id = "post.id", date = "date", text = "text"),
             output.file.name,
             row.names = FALSE,
-            col.names = TRUE,
-            sep = ",")
+            col.names = FALSE,
+            sep = "\t")
 group.data <- list()
 
 # Download data
@@ -96,17 +98,19 @@ for (i in 1:length(ids)) {
         group.data[[i]]$comments[((j - 1)*100 + 1):((j - 1)*100 + length(current.data))] <- comments
       }
       
+      writePostsToTsv(list(wall.posts = group.data[[i]]$wall.posts[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)], comments = group.data[[i]]$comments[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)]), output.file.name)
+      pb$tick()
       break
       
     } else {
       group.data[[i]]$wall.posts[((j - 1)*100 + 1):((j - 1)*100 + length(current.data))] <- current.data
       group.data[[i]]$comments[((j - 1)*100 + 1):((j - 1)*100 + length(current.data))] <- comments
+      pb$tick()
+      writePostsToTsv(list(wall.posts = group.data[[i]]$wall.posts[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)], comments = group.data[[i]]$comments[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)]), output.file.name)
     }
     
-    writePostsToCsv(list(wall.posts = group.data[[i]]$wall.posts[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)], comments = group.data[[i]]$comments[((j - 1)*100 + 1):length(group.data[[i]]$wall.posts)]), output.file.name)
-    pb$tick()
   }
-  
+
   message(paste0("\n", length(group.data[[i]]$wall.posts), " posts and ", length(group.data[[i]]$comments), " comments were downloaded\n"))
   message(paste0("Overall, ", sum(sapply(group.data, function(x) sapply(x, length))), " items were downloaded\n"))
 }
