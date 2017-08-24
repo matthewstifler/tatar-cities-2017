@@ -13,11 +13,13 @@ docTopic=$3
 textSource=$4
 dirName=$5
 
+mkdir -p top-texts & cd $_
+
 mkdir $dirName && cd $_
 
 for ((i=1; i<=$nOfTopics; i++))
   do
-    Rscript --vanilla ../code/R/get-top-texts-for-a-topic.R ../$docTopic ../$textSource $i $nOfPosts > "topic-$i.txt"
+    Rscript --vanilla ../../code/R/get-top-texts-for-a-topic.R ../../$docTopic ../../$textSource $i $nOfPosts > "topic-$i.txt"
  done
  
 cd ..

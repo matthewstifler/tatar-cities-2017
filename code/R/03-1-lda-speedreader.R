@@ -25,7 +25,7 @@ n.of.topics <- as.numeric(args[4:length(args)])
 #------------------
 
 dir.create(file.path("lda-reports"), showWarnings = FALSE)
-dir.create(file.path(report.prefix), showWarnings = FALSE)
+dir.create(file.path("lda-reports", report.prefix), showWarnings = FALSE)
 
 for (i in n.of.topics) {
   
