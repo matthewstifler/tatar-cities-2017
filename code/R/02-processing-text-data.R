@@ -10,13 +10,15 @@ require(dplyr)
 #-------------------
 
 lemmatize <- function(text.data) {
-  writeLines(text.data, "text-vec")
-  output <- system("mystem -cld text-vec | cat", intern = T) %>% 
+  tempfile.path <- tempfile("text-vec")
+  writeLines(text.data, file.path(tempfile.path))
+  
+  output <- system(paste0("mystem -cld ", tempfile.path, " | cat"), intern = T) %>% 
     gsub("[[:punct:]]", " ", .) %>% 
     gsub("\\s{2,}", " ", .) %>% 
     trimws()
   
-  file.remove("text-vec")
+  file.remove(tempfile.path)
   return(output)
 }
 

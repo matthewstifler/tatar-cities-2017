@@ -27,6 +27,8 @@ n.of.topics <- as.numeric(args[4:length(args)])
 dir.create(file.path("lda-reports"), showWarnings = FALSE)
 dir.create(file.path("lda-reports", report.prefix), showWarnings = FALSE)
 
+home.path <- getwd()
+
 for (i in n.of.topics) {
   
   #---------Create folder structure---------
@@ -35,6 +37,9 @@ for (i in n.of.topics) {
   dir.create(current.path, showWarnings = FALSE)
   
   #---------Run actual LDA---------
+  
+  #Running it from tempdir, so that intermediate files don't get mixed up
+  setwd(tempdir())
   
   lda.result <- mallet_lda(documents = as.character(data$text),
                                         topics = i,
@@ -45,6 +50,7 @@ for (i in n.of.topics) {
                                         stopword_list = readLines(stoplist.file),
                                         delete_intermediate_files = TRUE)
   
+  setwd(home.path)
   #----------Writing results----------
   write.csv(lda.result$document_topic_proportions,
             file.path(current.path, paste0(report.prefix, "-", i, "-doc-topics.csv")),
