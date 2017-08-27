@@ -65,4 +65,7 @@ for (i in n.of.topics) {
              label = apply(lda.result$topic_top_phrases, 1, function(x) paste(x, collapse = ", "))) %>% 
     write.csv2(file.path(current.path, paste0(report.prefix, "-", i, "-topic-phrases.csv")),
                row.names = FALSE)
+  
+  message(paste0("Lda for ", i, " topics is finished!"))
+  message(Sys.time())
 }
