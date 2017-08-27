@@ -27,10 +27,7 @@ for ((i=6; i<=$#; i++))
 
 #----------Doing the deeds----------
 
-Rscript --vanilla code/R/02-processing-text-data.R $dataSource $cleanedFilePath $stoplistPath &
-
-wait $!
-
+Rscript --vanilla code/R/02-processing-text-data.R $dataSource $cleanedFilePath $stoplistPath
 Rscript --vanilla code/R/03-1-lda-speedreader.R $cleanedFilePath $reportPrefix $stoplistPath $nOfCores "${topicsArray[@]}" # Some bash hack to print array
 python code/py/get-top-texts.py $pathToDocTopics $dataSource $reportPrefix
 
