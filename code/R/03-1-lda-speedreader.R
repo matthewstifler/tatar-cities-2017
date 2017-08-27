@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Usage: Rscript --vanilla 03-1-lda-speedreader.R %name of the text input file% %report files prefix% %stoplist file path% %numbers of topics to try out%
+# Usage: Rscript --vanilla 03-1-lda-speedreader.R %name of the text input file% %report files prefix% %stoplist file path% %number of cores to use% %numbers of topics to try out%
 # e.g.: Rscript --vanilla 03-lda-speedreader.R data/data-elabuga.csv elabuga-lda data/stoplist 5 10 50
 
 #------------------
@@ -16,10 +16,9 @@ args <- commandArgs(trailingOnly=TRUE)
 
 data <- read.delim(args[1], stringsAsFactors = FALSE, quote = "")
 report.prefix <- args[2]
-
 stoplist.file <- args[3]
-
-n.of.topics <- as.numeric(args[4:length(args)])
+n.of.cores <- args[4]
+n.of.topics <- as.numeric(args[5:length(args)])
 
 #------------------
 
@@ -45,7 +44,7 @@ for (i in n.of.topics) {
                                         iterations = 1500,
                                         hyperparameter_optimization_interval = 10,
                                         tokenization_regex = "[\\p{L}\\p{N}-]*\\p{L}+",
-                                        cores = 8,
+                                        cores = n.of.cores,
                                         stopword_list = readLines(stoplist.file),
                                         delete_intermediate_files = TRUE)
   
