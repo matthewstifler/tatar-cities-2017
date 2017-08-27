@@ -26,7 +26,9 @@ lemmatize <- function(text.data) {
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.delim(file = args[1], stringsAsFactors = FALSE)
+data <- read.delim(file = args[1], stringsAsFactors = FALSE, blank.lines.skip = FALSE, skipNul = FALSE, quote = "")
+colnames(data) <- stringr::str_replace(colnames(data), "X\\.", "") %>%
+     stringr::str_replace("\\.$", "")
 
 output.file.name <- args[2]
 

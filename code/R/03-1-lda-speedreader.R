@@ -14,8 +14,7 @@ require(dplyr)
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.delim(args[1], stringsAsFactors = FALSE)
-
+data <- read.delim(args[1], stringsAsFactors = FALSE, quote = "")
 report.prefix <- args[2]
 
 stoplist.file <- args[3]
