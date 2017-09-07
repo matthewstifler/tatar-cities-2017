@@ -114,17 +114,3 @@ for (i in 1:length(ids)) {
   message(paste0("\n", length(group.data[[i]]$wall.posts), " posts and ", length(group.data[[i]]$comments), " comments were downloaded\n"))
   message(paste0("Overall, ", sum(sapply(group.data, function(x) sapply(x, length))), " items were downloaded\n"))
 }
-
-# lapply(group.data, function(x) {
-#   text <- c()
-#   for (i in 1:length(x$wall.posts)) {
-#     text[i] <- paste(x$wall.posts[[i]]$text, paste(x$comments[[i]], collapse = " "))
-#   }
-#   return(data.frame(author.id = sapply(x$wall.posts, function(y) y$from_id),
-#                     post.id = sapply(x$wall.posts, function(y) y$id),
-#                     date = sapply(x$wall.posts, function(y) y$date),
-#                     text = text))
-# }) %>% {do.call(rbind, .)} %>% 
-#   write.csv(file = output.file.name,
-#             row.names = FALSE)
-# 
