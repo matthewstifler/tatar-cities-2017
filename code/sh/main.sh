@@ -29,7 +29,7 @@ for ((i=6; i<=$#; i++))
 
 Rscript --vanilla code/R/02-processing-text-data.R $dataSource $cleanedFilePath $stoplistPath
 Rscript --vanilla code/R/03-1-lda-speedreader.R $cleanedFilePath $reportPrefix $stoplistPath $nOfCores "${topicsArray[@]}" # Some bash hack to print array
-python code/py/get_top_texts.py $pathToDocTopics $dataSource $reportPrefix
+python code/py/get_top_texts.py $pathToDocTopics $dataSource code/config/vk-token $reportPrefix
 
 #----------Zipping all together and publishing----------
 pathForReport="../public_html/$reportPrefix.zip" 
