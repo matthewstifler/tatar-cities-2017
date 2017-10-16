@@ -14,7 +14,7 @@ require(dplyr)
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.delim(args[1], stringsAsFactors = FALSE)
+data <- data.table::fread(args[1], stringsAsFactors = FALSE, verbose = TRUE)
 report.prefix <- args[2]
 stoplist.file <- args[3]
 n.of.cores <- args[4]

@@ -26,9 +26,7 @@ lemmatize <- function(text.data) {
 
 args <- commandArgs(trailingOnly=TRUE)
 
-data <- read.delim(file = args[1], stringsAsFactors = FALSE, blank.lines.skip = FALSE, skipNul = FALSE, quote = "")
-colnames(data) <- stringr::str_replace(colnames(data), "X\\.", "") %>%
-     stringr::str_replace("\\.$", "")
+data <- data.table::fread(args[1], quote = "")
 
 output.file.name <- args[2]
 
@@ -65,5 +63,5 @@ data$text <- stringr::str_replace_all(data$text, stopwords_regex, " ") %>% gsub(
 message("Stopwords removed") 
 message(Sys.time())
 
-write.table(data, output.file.name, row.names = FALSE, sep = "\t")
+data.table::fwrite(data, output.file.name, sep = "\t")
 message("Output file is written, the script is finished")

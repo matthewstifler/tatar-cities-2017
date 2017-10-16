@@ -21,7 +21,7 @@ writePostsToTsv <- function(data, output.file.name) {
              post.id = sapply(data$wall.posts, function(y) y$id),
              date = sapply(data$wall.posts, function(y) y$date),
              text = text) %>%
-    write.table(file = output.file.name, append = TRUE, row.names = FALSE, col.names = FALSE, sep = "\t")
+    data.table::fwrite(file = output.file.name, append = TRUE, col.names = FALSE, sep = "\t", quote = TRUE)
 }
 
 #--------------------------
