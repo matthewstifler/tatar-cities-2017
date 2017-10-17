@@ -112,6 +112,6 @@ for (i in 1:length(ids)) {
     
   }
 
-  message(paste0("\n", length(group.data[[i]]$wall.posts), " posts and ", length(group.data[[i]]$comments), " comments were downloaded\n"))
+  message(paste0("\n", length(group.data[[i]]$wall.posts), " posts and ", sum(sapply(group.data[[i]]$comments, length)), " comments were downloaded\n"))
   message(paste0("Overall, ", sum(sapply(group.data, function(x) sapply(x, length))), " items were downloaded\n"))
 }

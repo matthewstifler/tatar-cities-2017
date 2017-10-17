@@ -29,6 +29,9 @@ home.path <- getwd()
 
 for (i in n.of.topics) {
   
+  message(paste0("Working on ", i, "-topic model"))
+  message(Sys.time())
+  
   #---------Create folder structure---------
   
   current.path <- file.path("lda-reports", report.prefix, paste0(i, "-topics"))

@@ -2,7 +2,7 @@
 
 # 1. Run processing
 # 2. Run LDA
-# 3. Get top texts (in the future)
+# 3. Get top texts
 
 # Usage: bash ./code/sh/main.sh [Raw data source: text in "text column"] [Path to save file with clean text] [Stoplist path] [LDA report prefix] [Number of cores to use for LDA] [Numbers of topics]
 # Example: bash ./code/sh/main.sh data/data-muslumovo.tsv data/data-muslumovo-processed.tsv data/stoplist-tatar muslumovo 6 10 20 30 40 50 60
