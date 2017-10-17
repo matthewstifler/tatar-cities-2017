@@ -66,9 +66,9 @@ def generate_vk_post_links(group_type_dict, dataframe):
   return links
 
 # Returns docs from given csv with "text" column, according to how much of given topic is contained in given doc
-def get_top_texts_for_topic(doc_topic_matrix, text_data, topic_number, texts_number, groups_types_dict):
+def get_top_texts_for_topic(doc_topic_matrix, topic_labels, text_data, topic_number, texts_number, groups_types_dict):
     # Get needed doc-topic matrix column and sort it
-    col = doc_topic_matrix.ix[:,topic_number - 1].copy()
+    col = doc_topic_matrix.ix[:, topic_number - 1].copy()
     col.sort(ascending=False)
     
     # Get indices of 50 top values from previous step, get according rows from source dataframe
@@ -79,8 +79,11 @@ def get_top_texts_for_topic(doc_topic_matrix, text_data, topic_number, texts_num
     links = generate_vk_post_links(groups_types_dict, output)
     
     output['link'] = links
+    output['topic.weight'] = col.head(texts_number)
+    output['topic.label'] = topic_labels[topic_number - 1]
     
-    return output[['author.id', 'post.id', 'date', 'link', 'text']]
+    
+    return output[['author.id', 'post.id', 'date', 'link', 'topic.label', 'topic.weight', 'text']]
 
 #-------------------
 
@@ -97,14 +100,16 @@ def main():
     
     # Get matching files
     doc_topic_files = fetch_docs_by_pattern(DOC_TOPIC_PATH, "doc-topics")
+    topic_labels_files = fetch_docs_by_pattern(DOC_TOPIC_PATH, "topic-labels")
     
     # Get types of groups
     group_ids = TEXT_DATA ['author.id'].unique().tolist()
     groups_types_dict = dict(zip(group_ids, get_groups_types(group_ids, VK_TOKEN)))
     
     # For each topic in each doc-topic matrix get top texts, add links and save to a .tsv file
-    for doc_topic in doc_topic_files:
+    for doc_topic, topic_label in zip(doc_topic_files, topic_labels_files):
         doc_topic_matrix = pd.read_csv(doc_topic)
+        topic_labels = pd.read_csv(topic_label, sep = ";")["label"]
         
         n_of_topics = doc_topic_matrix.shape[1]
         
@@ -112,7 +117,7 @@ def main():
         mkdir_p(current_path)
         
         for j in range(1, n_of_topics):
-            texts = get_top_texts_for_topic(doc_topic_matrix, TEXT_DATA, j, 50, groups_types_dict)
+            texts = get_top_texts_for_topic(doc_topic_matrix, topic_labels, TEXT_DATA, j, 50, groups_types_dict)
             texts.to_csv(os.path.join(current_path, str(j) + "-topic" + ".tsv"), sep = "\t", header = False, index = False)
         
         print doc_topic + " processed at " + time.strftime("%X")
