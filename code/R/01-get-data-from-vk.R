@@ -61,7 +61,8 @@ for (i in 1:length(ids)) {
   
   pb <- progress_bar$new(
     format = ":spin Getting data [:bar] :percent Elapsed time: :elapsedfull ETA: :eta",
-    total = (count %/% 100) + 1)
+    total = (count %/% 100) + 1,
+    force = TRUE)
   
   pb$tick(0)
   
